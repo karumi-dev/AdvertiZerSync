@@ -1,4 +1,4 @@
-﻿function Get-AzAdPolicyInitiative {
+﻿function Get-AzAdInitiativeDefinition {
 	<#
 		.SYNOPSIS
 			Downloads Azure Advertiser Policy Initiatives
@@ -17,7 +17,19 @@
 	
 			Imports the file stored in $function according to import policy
 	#>
-	$response = Invoke-WebRequest -Uri $script:AzAdPolicyInitiativeCsv -ErrorAction Stop
-	$policies = $response.Content | ConvertFrom-Csv -Delimiter "," -ErrorAction Stop
-	return $policies
+    [CmdletBinding(DefaultParameterSetName = 'Pipeline')]
+    param(
+        [Parameter(
+            ParameterSetName = 'Named',
+            Mandatory = $true
+        )]
+        [string]$Name,
+
+        [Parameter(
+            ParameterSetName = 'Pipeline',
+            ValueFromPipeline = $true,
+            Mandatory = $true
+        )]
+        [object]$InputObject
+    )
 }

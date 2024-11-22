@@ -7,18 +7,16 @@
 #>
 
 Describe "Testing Get-AzAdPolicy" {
-    Context "Successful Download Policy and CSV Conversion" {
+    Context "Download Policy and CSV Conversion" {
         It "Returns an Object with list of Policies" {
-            $result = Get-AzAdPolicy | Out-String
-            Write-PSFMessage -Level Verbose ($result)
             Get-AzAdPolicy | Should -Not -BeNullOrEmpty
         }
     }
-    Context "Successful Download Policy Initiative and CSV Conversion" {
+}
+Describe "Testing Get-AzAdInitiative" {
+    Context "Download Initiative and CSV Conversion" {
         It "Returns an Object with list of Policy Initiatives" {
-            $result = Get-AzAdPolicyInitiative | Out-String
-            Write-PSFMessage -Level Verbose ($result)
-            Get-AzAdPolicyInitiative | Should -Not -BeNullOrEmpty
+            Get-AzAdInitiative | Should -Not -BeNullOrEmpty
         }
     }
 }

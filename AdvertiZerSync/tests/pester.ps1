@@ -5,7 +5,7 @@
 	
 	[ValidateSet('None', 'Normal', 'Detailed', 'Diagnostic')]
 	[Alias('Show')]
-	$Output = "None",
+	$Output = "Detailed",
 	
 	$Include = "*",
 	
