@@ -10,19 +10,30 @@ function Get-AzAdPolicyGithubLink{
     if ($response.StatusCode -eq 200) {
         # Get Github URL
         $html_content = $response.Content
-        $github_url = $html_content | Select-String -Pattern $script:AzAdGithubRegex
-        if (!$github_url) {
-            throw "Regex match failed for trying to find Azure Advertiser Github Policy Link, Check if the policy is a BuiltInPolicy $az_advertiser_url"
-        } else {
+        foreach ($regex in $script:AzAdGithubRegex) {
+            $github_url = $html_content | Select-String -Pattern $script:AzAdGithubRegex
+            # No Regex match found try the next pattern
+            if (!$github_url) {
+                continue
+            }
+
             $github_url = $github_url.Matches[0].Value
+            Write-Debug "Pattern Found with: $regex"
+            Write-Debug "Match Result: $github_url"
+
+            # Add the Policy path to the Github URL (Usually adds /azurepolicy.json)
+            if (!($github_url -like "*.json")) {
+                $github_url = $github_url + $script:AzAdGithubAzurePolicyFileName
+            }
+
+            # Convert the github link to the raw link to the json file for downloading
+            $github_raw = Convert-GitHubLinkToRaw $github_url
+
+            Write-Debug "Returning Converted Github Raw Link: $github_raw"
+            return [string]$github_raw
         }
-        # Add the Policy path to the Github URL (Usually adds /azurepolicy.json)
-        $github_policy_url = $github_url + $script:AzAdGithubAzurePolicyFileName
-
-        # Convert the github link to the raw link to the json file for downloading
-        $github_raw = Convert-GitHubLinkToRaw $github_policy_url
-
-        return [string]$github_raw
+        Write-Debug "No Regex Patterns Matches for the Azure Policy $az_advertiser_url"
+        throw "Regex match failed for trying to find Azure Advertiser Github Policy Link, Check if the policy is a BuiltInPolicy $az_advertiser_url"
     }
     throw "Azure Policy $Name not found in Azure Advertiser"
 }
