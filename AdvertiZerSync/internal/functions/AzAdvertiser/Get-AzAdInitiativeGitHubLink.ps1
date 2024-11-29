@@ -1,4 +1,4 @@
-function Get-AzAdInitiativeGithubLink{
+﻿function Get-AzAdInitiativeGithubLink{
     param (
         [Parameter(Mandatory=$true)]
         [Alias("PolicyName")]

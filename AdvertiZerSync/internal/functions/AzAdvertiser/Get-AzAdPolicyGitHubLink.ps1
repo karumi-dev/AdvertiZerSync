@@ -1,4 +1,4 @@
-function Get-AzAdPolicyGithubLink{
+﻿function Get-AzAdPolicyGithubLink{
     param (
         [Parameter(Mandatory=$true)]
         [Alias("PolicyName")]

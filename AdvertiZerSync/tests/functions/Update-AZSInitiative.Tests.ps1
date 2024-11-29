@@ -16,7 +16,7 @@ Describe "Testing Update-AZSInitiative" {
             if ($exists) {
                 Remove-AzPolicySetDefinition -SubscriptionId $subscription_id -Name $initiative_id
             }
-            Update-AZSInitiative -SubscriptionId $subscription_id -InitiativeID $initiative_id -Debug
+            Update-AZSInitiative -SubscriptionId $subscription_id -InitiativeID $initiative_id -Force
             $result = Get-AzPolicySetDefinition -SubscriptionId $subscription_id -Custom | Where-object {$_.Name -eq $initiative_id}
             $result | Should -Not -BeNullOrEmpty
             Remove-AzPolicySetDefinition -SubscriptionId $subscription_id -Name $initiative_id -Force
@@ -30,7 +30,7 @@ Describe "Testing Update-AZSInitiative" {
 
             $exists = Get-AzPolicySetDefinition -SubscriptionId $subscription_id -Custom | Where-object {$_.Name -eq $initiative_id}
             if (!$exists) {
-                Update-AZSInitiative -SubscriptionId $subscription_id -InitiativeID $initiative_id
+                Update-AZSInitiative -SubscriptionId $subscription_id -InitiativeID $initiative_id -Force
             }
             Update-AzPolicySetDefinition -SubscriptionId $subscription_id -Metadata '{"version": "0.0.1"}' -Name $initiative_id
 

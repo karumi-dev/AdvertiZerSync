@@ -1,4 +1,4 @@
-function Get-AzAdPolicyDTALink{
+﻿function Get-AzAdPolicyDTALink{
     param (
         [Parameter(Mandatory=$true)]
         [Alias("PolicyName")]

@@ -54,14 +54,14 @@ Describe "Testing Get-AzAdPolicyDefinition" {
     }
 }
 Describe "Testing Get-AzAdInitiativeDefinition" {
-    Context "Check if Single Azure Landing Zone Policy Download is Successful" {
+    Context "Check if Single Azure Landing Zone initiative Download is Successful" {
         It "Returns an the json object of the initiative definition" {
             $initiative_id = "Enforce-EncryptTransit_20240509"
             $initiative_definition = Get-AzAdInitiativeDefinition -InitiativeID $initiative_id
 
             # Expected json result:
             $url = "https://raw.githubusercontent.com/Azure/Enterprise-Scale/refs/heads/main/src/resources/Microsoft.Authorization/policySetDefinitions/Enforce-EncryptTransit_20240509.json"
-            $expected_result = (Invoke-WebRequest -Uri $url).Content
+            $expected_result = (Invoke-WebRequest -Uri $url).Content -replace '\[\[',"["
             $initiative_definition.Definition | Should -Be $expected_result
         }
     }
@@ -69,7 +69,6 @@ Describe "Testing Get-AzAdInitiativeDefinition" {
     Context "Check if Pipeline Azure Landing Zone Policy Download is Successful" {
         It "Returns an array of initiative Definitions" {
             $initiatives = Get-AzAdInitiative | Where-Object {$_.initiativeType -ne "BuiltIn"} | Select-Object -First 5
-            Write-Host ($initiatives | Out-String)
             $initiatives_definitions = $initiatives | Get-AzAdInitiativeDefinition
 
             # Write-Host ($policy_definitions | Get-Member | Out-String)

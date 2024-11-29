@@ -1,4 +1,4 @@
-function Get-AzAdPolicyDefinitionVersion{
+﻿function Get-AzAdPolicyDefinitionVersion{
     param (
         [Parameter(Mandatory=$true)]
         [Alias("Definition")]

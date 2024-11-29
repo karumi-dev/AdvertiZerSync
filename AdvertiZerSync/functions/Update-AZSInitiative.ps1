@@ -73,9 +73,10 @@
             $initiative_id = $InitiativeID
         }
         $initiative_definition = Get-AzAdInitiativeDefinition -InitiativeID $initiative_id
-        $initiative_definition_path = "./$($initiative_definition.InitiativeID).json"
-        $initiative_definition.Definition | Out-File $initiative_definition_path
-        Write-Debug "Initiative Definition File Path $initiative_definition_path"
+
+        # $initiative_definition_path = "./$($initiative_definition.InitiativeID).json"
+        # $initiative_definition.Definition | Out-File $initiative_definition_path
+        # Write-Debug "Initiative Definition File Path $initiative_definition_path"
 
         if ($azure_custom_initiatives_ids.Contains($initiative_definition.InitiativeID)) {
             # Check if policy exists already in Azure and compare versions
@@ -126,9 +127,9 @@
 
     }
     End {
-        if (Test-Path $initiative_definition_path -PathType Leaf) {
-            # Remove-Item $initiative_definition_path | Out-Null
-        }
+        # if (Test-Path $initiative_definition_path -PathType Leaf) {
+        #     Remove-Item $initiative_definition_path | Out-Null
+        # }
     }
 
 }
