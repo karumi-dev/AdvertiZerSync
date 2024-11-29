@@ -1,17 +1,18 @@
-function Get-AzAdPolicyGithubLink{
+function Get-AzAdInitiativeGithubLink{
     param (
         [Parameter(Mandatory=$true)]
         [Alias("PolicyName")]
         [string]$Name
     )
 
-    $az_advertiser_url = "$($script:AzAdPolicyURL)" -f $Name
+    $az_advertiser_url = "$($script:AzAdInitiativeURL)" -f $Name
+    Write-Debug "AzAdvertiser Initiative URL: $az_advertiser_url"
     $response = Invoke-WebRequest -Uri $az_advertiser_url -ErrorAction Stop
     if ($response.StatusCode -eq 200) {
         # Get Github URL
         $html_content = $response.Content
         foreach ($regex in $script:AzAdGithubRegex) {
-            $github_url = $html_content | Select-String -Pattern $regex
+            $github_url = $html_content | Select-String -Pattern $script:AzAdGithubRegex
             # No Regex match found try the next pattern
             if (!$github_url) {
                 continue

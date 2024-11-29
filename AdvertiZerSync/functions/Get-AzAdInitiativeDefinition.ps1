@@ -17,19 +17,41 @@
 	
 			Imports the file stored in $function according to import policy
 	#>
-    [CmdletBinding(DefaultParameterSetName = 'Pipeline')]
+    [CmdletBinding(DefaultParameterSetName = 'All')]
     param(
         [Parameter(
-            ParameterSetName = 'Named',
-            Mandatory = $true
+            ParameterSetName = 'InitiativeID',
+            Mandatory = $false
         )]
-        [string]$Name,
+		[Alias('ID', 'Name')]
+        [string]$InitiativeID,
 
         [Parameter(
-            ParameterSetName = 'Pipeline',
             ValueFromPipeline = $true,
-            Mandatory = $true
+            Mandatory = $false
         )]
-        [object]$InputObject
+        [object[]]$AzAdInitiative
     )
+	Begin {
+    }
+    Process {
+        if ($PSBoundParameters.ContainsKey("AzAdInitiative")) {
+            $initiative_id = $AzAdInitiative.initiativeID
+        }
+        else {
+            $initiative_id = $InitiativeID
+        }
+        Write-Debug "Initiative ID: $initiative_id"
+        $initiative_link = Get-AzAdInitiativeGitHubLink $initiative_id
+        $response = Invoke-WebRequest -Uri $initiative_link
+        $initiative_definition = $response.content
+        $initiative_definition = $initiative_definition -replace "\[\[","["
+        $result = [PSCustomObject]@{
+            InitiativeID   = $initiative_id
+            Definition = $initiative_definition
+        }
+        return $result
+    }
+    End {
+    }
 }

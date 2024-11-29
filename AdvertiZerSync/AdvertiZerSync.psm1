@@ -1,4 +1,10 @@
 ﻿$script:ModuleRoot = $PSScriptRoot
+class BuiltInPolicyException : System.Exception {
+    BuiltInPolicyException([string] $message) : base($message) {}
+}
+class NoDTALinkException : System.Exception {
+    NoDTALinkException([string] $message) : base($message) {}
+}
 
 #region Helper function
 function Import-ModuleFile

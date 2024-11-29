@@ -8,6 +8,7 @@
 	$Output = "Detailed",
 	
 	$Include = "*",
+	# $Include = "*Update-AZSInitiative*",
 	
 	$Exclude = ""
 )

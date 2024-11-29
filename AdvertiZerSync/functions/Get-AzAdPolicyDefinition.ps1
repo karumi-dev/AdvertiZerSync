@@ -20,34 +20,43 @@
     [CmdletBinding(DefaultParameterSetName = 'All')]
     param(
         [Parameter(
-            ParameterSetName = 'Name',
+            ParameterSetName = 'PolicyID',
             Mandatory = $false
         )]
-		[Alias('ID', "PolicyID")]
-        [string]$Name,
+		[Alias('ID', 'Name')]
+        [string]$PolicyID,
 
         [Parameter(
-            ParameterSetName = 'Pipeline',
             ValueFromPipeline = $true,
             Mandatory = $false
         )]
-        [object]$AzAdPolicy
+        [object[]]$AzAdPolicy
     )
 	Begin {
     }
     Process {
-        if ($PSCmdlet.ParameterSetName -eq 'Name') {
-            $policy_link = Get-AzAdPolicyGitHubLink $Name
-            $response = Invoke-WebRequest -Uri $policy_link
-            $policy_definition = $response.content
-            return $policy_definition
-        }
-        elseif ($PSBoundParameters.ContainsKey("Pipeline")) {
-            Write-Host "Pipeline"
+        if ($PSBoundParameters.ContainsKey("AzAdPolicy")) {
+            $policy_id = $AzAdPolicy.PolicyId
         }
         else {
-            Write-Host "Processing pipeline input: $InputObject"
+            $policy_id = $PolicyID
         }
+        try {
+            $policy_link = Get-AzAdPolicyDTALink $policy_id
+            Write-Debug "Successfully got DTA Link $policy_link"
+        } catch [NoDTALinkException] {
+            Write-Debug "Failed to get DTA Link Error: $_"
+            $policy_link = Get-AzAdPolicyGitHubLink $policy_id
+            Write-Debug "Successfully got Github Link $policy_link"
+        }
+
+        $response = Invoke-WebRequest -Uri $policy_link
+        $policy_definition = $response.content
+        $result = [PSCustomObject]@{
+            PolicyID   = $policy_id
+            Definition = $policy_definition
+        }
+        return $result
     }
     End {
     }
